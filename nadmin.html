@@ -1,0 +1,552 @@
+<html>
+<head>
+<style>
+.main{
+
+}
+.imgtr{
+   min-width:50px;
+   max-height:22px;
+   font-size: 20px;
+   font-family: monospace;
+   border: 1px solid black;
+}
+.imgta{
+   min-width:30px;
+   font-size: 20px;
+   font-family: monospace;
+   border: 1px solid black;
+}
+td{text-align:center;border:1px solid black;}
+tr{border:1px solid black;height:fit-content;}
+table{border-spacing: 0px;}
+
+.flex{display: flex;justify-content: space-around;padding:10px;}
+.flexc{display:flex;border:2px solid black;background:#d6bc14;}
+#tools{}
+#tools div{display:flex;align-items:center;}
+.labtc{
+	display:inline-flex;
+	align-items:center;
+	font-family:monospace;
+	font-size:17px;
+}
+.inptc{
+    width: 20px;
+    height: 20px;
+}
+.apb{min-width:61px;min-height:25px;border-right:2px solid black;background-color:seashell;width:fit-content;text-align:center;padding:4px;font-size:30px;font-family: monospace;}
+.flexab{display:flex;border:2px solid black;background:#d6bc14;}
+.flexpr{display:none;border:2px solid black;background:#d6bc14;}
+.apba{min-width:61px;min-height:25px;border-right:2px solid black;background-color:seashell;width:fit-content;text-align:center;padding:4px;font-size:30px;font-family: monospace;}
+.apbab{width:45px;height:45px;background:url('abs.png');background-size:contain;border:5px solid #d6bc14;}
+.apbpr{width:45px;height:45px;background:url('pre.png');background-size:contain;border:5px solid #d6bc14;}
+.lockc{width:45px;height:45px;background:url('lock.png');background-size:contain;border:5px solid #d6bc14;}
+
+.flexcb{display:none;border:2px solid black;background:#d6bc14;}
+</style>
+<script src="h2c.js"></script>
+<script src="jm.js"></script>
+<script src="jtm.js"></script>
+<link rel="stylesheet" href="jtm.css"/>
+<script src="sam.js"></script>
+<script src="crypto.js"></script>
+</head>
+<body>
+<div id="bodya"  style="display:none;">
+<div id="tools">
+
+<div class="flex">
+<form style="justify-content:space-around;display:flex;">
+<label class="labtc" style="flex-direction:column;">Subject:<input type="text" list="subjs" id="subji"/><datalist id="subjs" style="height:30%;overflow-y:auto;"><option>Microbiology</option><option>Pathology</option><option>Pharmacology</option><option>Forensic-Medicine</option><option>Preventive-Medicine</option></datalist>
+</label>
+<label class="labtc" style="flex-direction:column;">Faculty:<input type="text" list="facts" id="facti" /><datalist id="facts" style="height:30%;overflow-y:auto;"><option></option></datalist>
+</label>
+<label class="labtc" style="flex-direction:column;">Time Start-End:<input type="text" placeholder="Start" id="strtimpic"/><input type="text" placeholder="End" id="endtimpic"/><button class="labtc" type="button" id="endtimbut">Set Current</button>
+</label>
+</form>
+</div>
+
+<div class="flex" style="">
+<form style="justify-content:space-around;display:flex;margin-block-end:0px;column-gap:10px;">
+<label class="labtc">A:<input class="inptc" type="checkbox" id="bata"></label>
+<label class="labtc">B:<input class="inptc" type="checkbox" id="batb"></label>
+<label class="labtc">C:<input class="inptc" type="checkbox" id="batc"></label>
+</form>
+</div>
+<div class="flex" style="justify-content:center;column-gap:6px;">
+<button class="labtc" type="button" onclick="toolchk(1)">Uncheck-All</button>
+<button class="labtc" type="button" onclick="toolchk(2)">Check-All</button>
+</div>
+
+<button type="button" id="crsbut" style="display:block;width:50%;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;" onclick='crtshtini();'>Create Sheet</button>
+<button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='refreshl()'>Refresh Data</button>
+<button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='sendimg(document.getElementById("finallook"));'>Send Attendance</button>
+<button type="button" style="display:block;width:50%;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='endatts()'>End Attendance System</button>
+</div>
+<div id="help" style="display:none;">
+<div id="info"></div>
+</div>
+	
+<div id="atctrl">
+<div style="border:solid 2px black;margin-top:10px;">
+<div style="display:block;width:auto;border-bottom:solid 2px black;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;" onclick="if(this.style.backgroundColor =='red'){document.getElementById('absudbox').style.display='none';this.style.borderBottom='none';this.style.backgroundColor ='aqua';}else{document.getElementById('absudbox').style.display='flex';this.style.borderBottom='solid 2px black';this.style.backgroundColor ='red';}">Absent Students</div>
+<div class="flex" id="absudbox" style="flex-wrap:wrap;">
+</div>
+</div>
+
+<div style="border:solid 2px black;margin-top:10px;">
+<div style="display:block;width:auto;border-bottom:solid 2px black;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;" onclick="if(this.style.backgroundColor =='red'){document.getElementById('presudbox').style.display='none';this.style.borderBottom='none';this.style.backgroundColor ='aqua';}else{document.getElementById('presudbox').style.display='flex';this.style.borderBottom='solid 2px black';this.style.backgroundColor ='red';}">Present Students</div>
+<div class="flex" id="presudbox" style="flex-wrap:wrap;">
+</div>
+</div>
+
+<div style="border:solid 2px black;margin-top:10px;">
+<div style="display:block;width:auto;border-bottom:solid 2px black;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;" onclick="if(this.style.backgroundColor =='red'){document.getElementById('chngb').style.display='none';this.style.borderBottom='none';this.style.backgroundColor ='aqua';}else{document.getElementById('chngb').style.display='flex';this.style.borderBottom='solid 2px black';this.style.backgroundColor ='red';}">Changed To</div>
+<div class="flex" id="chngb" style="flex-wrap:wrap;">
+</div>
+</div>
+
+<div style="border:solid 2px black;margin-top:10px;">
+<div style="display:block;width:auto;border-bottom:solid 2px black;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;" onclick="if(this.style.backgroundColor =='red'){document.getElementById('lokb').style.display='none';this.style.borderBottom='none';this.style.backgroundColor ='aqua';}else{document.getElementById('lokb').style.display='flex';this.style.borderBottom='solid 2px black';this.style.backgroundColor ='red';}">Locker</div>
+<div class="flex" id="lokb" style="flex-wrap:wrap;display:none;">
+</div>
+</div>
+
+</div>
+
+<div style="height:1376px;width:1048px;border:1px solid black;font-family:monospace;font-size:20px;margin-top:10px;" id="finallook">
+<div style="height:400px;width:1048px;display:flex;flex-direction:column;justify-content:space-around;">
+<div style="height:100px;width:100px;background:url(1.png);background-size:cover;align-self:center;"></div>
+<div style="height:250px;width:848px;display:flex;flex-direction:column;width:100%;">
+<div style="font-size:25px;align-self:center;width:fit-content;">Osmania Medical College Attendance Sheet</div>
+<div class="flex" style=""><div style="" id="subjfld">Subject : </div><div id="timefld" style="">Time : </div><div style="" id="datefld">Date : </div></div>
+<div class="flex" style=""><div style="" id="rollfld">Roll No : </div><div style="" id="bachfld">Batches : </div><div style="" id="factfld">Administered by : </div></div>
+</div>
+</div>
+<div style="height:960px;width:1048px;display:flex;align-self:end;margin-bottom:15px;justify-content:space-around;" id="">
+<div style="height:960px;width:1048px;display:flex;align-self:end;margin-bottom:15px;justify-content:space-around;" id="attsht"></div>
+<div style="position:absolute;background:url(1.png);background-repeat:no-repeat;background-size:100% 100%;width: 960px;height: 960px;opacity: 15%;"></div>
+</div>
+</div>
+
+<div style="height:1376px;width:1048px;" id="screenshot"></div>
+<button type="button" id="cngshtb" style="display:none;width:50%;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;" onclick='chngsht();'>Change Sheet</button>
+</div>
+<div style="display:none;" id="geolat"></div>
+<div style="display:none;" id="geolon"></div>
+<div style="display:none;" id="msguifb"></div>
+<div style="display:none;" id="msgidb"></div>
+<div style="text-align:center;margin-top:5px;"> Created by</div>
+<div style="text-align:center;font:message-box;margin-top:3px;"> Zulqar Nayn</div>
+<script>
+//https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage?chat_id=-1001310291767&text=bye
+
+window.onload = function(){
+	const opt = {enableHighAccuracy: true};
+	navigator.geolocation.getCurrentPosition(success, gerror, opt);
+}
+function onld(){
+	const opt = {enableHighAccuracy: true};
+	navigator.geolocation.getCurrentPosition(success, gerror, opt);
+}
+function gerror(error){
+	if(error.code == 1){
+		swal("Please allow the Location Access");
+		onld();
+	}else{
+		swal("Unknown error Occured (Browser)");
+		//onld();
+	}
+}
+function success(pos){
+	document.getElementById("geolat").innerText = pos.coords.latitude;
+	document.getElementById("geolon").innerText = pos.coords.longitude;
+	document.getElementById("bodya").style.display="block";
+}
+$('#strtimpic').timepicker({'scrollDefault':'now','timeFormat': 'h:mm a','minTime': '8:00am','maxTime': '6:00pm','step': 15});
+$('#endtimpic').timepicker({'scrollDefault':'now','timeFormat': 'h:mm a','minTime': '8:00am','maxTime': '6:00pm','step': 15});
+$('#endtimbut').on('click', function (){
+	$('#endtimpic').timepicker('setTime', new Date());
+});
+
+var arr = [], rcl=[], lockl=[];
+var screenshot = document.getElementById("screenshot");
+var resp, prel=[], absl=[], copl=[], pprel=[], pabsl=[], xhttp, msgid, etrc, studcon, arrol;
+var absbox=document.getElementById("absudbox"), prebox=document.getElementById("presudbox"), chngbv=document.getElementById("chngb"), lokbv=document.getElementById("lokb");
+var caption, bstr, bustr;
+var rrrrr='', bps, pv=1, nt=42, i=1, j=1, tmparr, setroom, rollary=[], pal=[];
+
+var apba='<div class="flexab" id="apbae', apbp='<div class="flexpr" id="apbpe', apb2='"><div class="apb">', apb3='</div><button class="apbab" onclick="clkabs(', apb4='</div><button class="apbpr" onclick="clkpre(', apb5=')"></button></div>';
+
+var loke1='<div class="flexab" id="locke', loke2='"><div class="apb">', loke3='</div><button class="lockc" onclick="locker(this,', loke4=');"></button></div>';
+
+var cba='<div class="flexcb" id="cbae', cbp='<div class="flexcb" id="cbpe', cb2='"><div class="apb">', cb3='</div><div class="apbab"></div></div>', cb4='</div><div class="apbpr"></div></div>';
+
+var attentabstr='', absbstr='', prebstr='', chngbstr='', lokbstr;
+
+var multiadm=true, msguif='';
+
+// start of toolchk which select and unselect batches 
+function toolchk(rrr){
+if(rrr==1){
+document.getElementById("bata").checked=false;document.getElementById("batb").checked=false;document.getElementById("batc").checked=false;
+}else if(rrr==2){
+document.getElementById("bata").checked=true;document.getElementById("batb").checked=true;document.getElementById("batc").checked=true;
+}
+}
+
+// start of crtshtini which confirm starting 
+function crtshtini(){
+swal({title: "Are you sure?",text: "It will start Attendance System",icon: "warning",buttons: true,dangerMode: true,}).then((value) => {if(value){swal({icon: "success",title:"Done",text:"Attendance System Started"});crtsht();}else{swal({title:"Cancelled Process",icon:"info"});}});
+}
+
+// start of click events
+
+function clkpre(rollnoc){
+		if (lockl.includes(rollnoc)){
+			swal("I am Locked");
+		}else{
+	    absl.push(rollnoc);
+		absl.sort(function(a, b){return a-b});
+		prel.splice(prel.indexOf(rollnoc),1);
+		document.getElementById("apbae"+rollnoc).style.display="flex";
+		document.getElementById("apbpe"+rollnoc).style.display="none";
+		if(rcl.includes(rollnoc)){
+			rcl.splice(rcl.indexOf(rollnoc),1);
+			document.getElementById("cbpe"+rollnoc).style.display="none";
+		}else{
+			rcl.push(rollnoc);
+			rcl.sort(function(a, b){return a-b});
+			document.getElementById("cbae"+rollnoc).style.display="flex";
+		}
+		document.getElementById("tdap"+rollnoc).innerText="A";
+		}
+}
+function clkabs(rollnoc){
+		if (lockl.includes(rollnoc)){
+			swal("I am Locked");
+		}else{
+	    prel.push(rollnoc);
+		prel.sort(function(a, b){return a-b});
+		absl.splice(absl.indexOf(rollnoc),1);
+		document.getElementById("apbae"+rollnoc).style.display="none";
+		document.getElementById("apbpe"+rollnoc).style.display="flex";
+		if(rcl.includes(rollnoc)){
+			rcl.splice(rcl.indexOf(rollnoc),1);
+			document.getElementById("cbae"+rollnoc).style.display="none";
+		}else{
+			rcl.push(rollnoc);
+			rcl.sort(function(a, b){return a-b});
+			document.getElementById("cbpe"+rollnoc).style.display="flex";
+		}
+		document.getElementById("tdap"+rollnoc).innerText="P";
+		}
+}
+function locker(ele, rollnoc){
+		if (lockl.includes(rollnoc)){
+			lockl.splice(lockl.indexOf(rollnoc),1);
+			rcl.splice(rcl.indexOf(rollnoc),1);
+			if (absl.includes(rollnoc)){
+				document.getElementById("cbae"+rollnoc).style.display="none";
+	                }
+			ele.style.backgroundImage="url('lock.png')";
+	                ele.style.backgroundSize="contain";
+		}else{
+			if(rcl.includes(rollnoc)){
+			}else{
+			lockl.push(rollnoc);
+			lockl.sort(function(a, b){return a-b});
+			rcl.push(rollnoc);
+			rcl.sort(function(a, b){return a-b});
+			if (absl.includes(rollnoc)){
+				document.getElementById("cbae"+rollnoc).style.display="flex";
+	                }
+			}
+			ele.style.backgroundImage="url('unlock.png')";
+			ele.style.backgroundSize="contain";
+		}
+}
+
+// end of click events
+
+// start of crtsht create sheet
+function crtsht(){
+document.getElementById("atctrl").style.display="none";
+tmparr=[];
+rollary=[0,0];
+tmparr.push("many");
+tmpstr='';
+bustr='';
+if(document.getElementById("bata").checked){tmparr.push("A");rollary[0]=1;rollary[1]=83;tmpstr+='-A';bustr+='a';}
+if(document.getElementById("batb").checked){tmparr.push("B");if(rollary[0]==0){rollary[0]=84;}rollary[1]=166;tmpstr+='-B';bustr+='b';}
+if(document.getElementById("batc").checked){tmparr.push("C");if(rollary[0]==0){rollary[0]=167;}rollary[1]=235;tmpstr+='-C';bustr+='c';}
+bstr=tmpstr;
+document.getElementById("subjfld").innerText="Subject : "+document.getElementById("subji").value;
+document.getElementById("timefld").innerText="Time : "+document.getElementById("strtimpic").value+"-"+document.getElementById("endtimpic").value;
+document.getElementById("datefld").innerText= "Date : "+new Date().toDateString();
+document.getElementById("rollfld").innerText= "Roll No : "+rollary[0]+"-"+rollary[1];
+document.getElementById("factfld").innerText= "Administered by: "+document.getElementById("facti").value;
+document.getElementById("bachfld").innerText= "Batches :"+bstr;
+drawatt(tmparr);
+}
+// end of crtsht create sheet
+
+// start of drawatt draw sheet
+function drawatt(lv){
+
+addEventListener("beforeunload", unld);
+
+absbox.innerHTML='';
+prebox.innerHTML='';
+document.getElementById("attsht").innerHTML='';
+absbstr='';
+prebstr='';
+chngbstr='';
+lokbstr='';
+studcon=0, absl=[], prel=[], copl=[], pal=[], rcl=[], lockl=[];
+arrol=[];
+if(lv.includes("A")){
+arrol.push([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]);
+arrol.push([29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]);
+arrol.push([57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83]);
+studcon+=83;
+}
+if(lv.includes("B")){
+arrol.push([84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111]);
+arrol.push([112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139]);
+arrol.push([140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166]);
+studcon+=83;
+}
+if(lv.includes("C")){
+arrol.push([167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194]);
+arrol.push([195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,220,221,222,223]);
+arrol.push([224,225,226,227,228,229,230,231,232,233,234,235]);
+studcon+=69;
+}
+if(lv.includes("many")){
+i=1;
+for(sbar of arrol){
+attentabstr='';
+document.getElementById("attsht").innerHTML += '<table class="main" style="height:'+((sbar.length+2)*22)+'px;"><thead><tr class="" style="background:silver;"><td class="imgtr">Rno</td></td><td class="imgta">?</td></tr></thead><tbody id="attentab'+i+'"></tbody></table>';
+for(item of sbar){
+	pal.push("A");
+	absl.push(item);
+	attentabstr+='<tr class="dumy"><td class="imgtr">'+item+'</td><td id="tdap'+item+'" class="imgta">A</td></tr>';
+	absbstr+=apba+item+apb2+item+apb3+item+apb5;
+	prebstr+=apbp+item+apb2+item+apb4+item+apb5;
+	chngbstr+=cba+item+cb2+item+cb3+cbp+item+cb2+item+cb4;
+	lokbstr+=loke1+item+loke2+item+loke3+item+loke4;
+	copl.push(item);
+}
+document.getElementById("attentab"+i).innerHTML = attentabstr;
+i++;
+}
+absbox.innerHTML=absbstr;
+prebox.innerHTML=prebstr;
+chngbv.innerHTML=chngbstr;
+lokbv.innerHTML=lokbstr;
+}
+// here made JSON of our batches
+tmpstr='{';
+i=0;
+for(item of pal){tmpstr+=('"'+copl[i]+'":"'+item+'",');i++;}
+tmpstr+='"tmp":"t"}';
+
+// get empty room and start using it
+var xhttf = new XMLHttpRequest();
+xhttf.responseType="json";
+xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
+	if(xhttf.response.room1=="no"){setroom=1;}else if(xhttf.response.room2=="no"){setroom=2;}else if(xhttf.response.room3=="no"){setroom=3;}else if(xhttf.response.room4=="no"){setroom=4;}
+	var xhttt = new XMLHttpRequest();
+	xhttt.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
+	var xhtto = new XMLHttpRequest();
+	xhtto.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
+	caption=encodeURI("Subject : "+document.getElementById("subji").value+"  Date : "+new Date().toDateString()+"  Time: "+document.getElementById("strtimpic").value+"-"+document.getElementById("endtimpic").value+"  Batches :"+bstr+" Roll No: "+rollary[0]+"-"+rollary[1]+"  Administered by: "+document.getElementById("facti").value);
+	var xtthp = new XMLHttpRequest();
+	xtthp.responseType="json";
+	xtthp.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){document.getElementById("msguifb").innerText=(this.response.result.message_id);
+	msguif = document.getElementById("msguifb").innerText;
+	remain();
+	}};
+	xtthp.open("GET", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage?chat_id=-1001310291767&text="+caption), true);
+	xtthp.send();
+	}};
+	xhtto.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/room'+setroom+'/apcl.json'), true);
+	xhtto.setRequestHeader("Content-Type", "application/json");
+	xhtto.send(tmpstr);
+	}};
+	xhttt.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/inuse/room'+setroom+'.json'), true);
+	xhttt.send('"yes"');
+}};
+xhttf.open("GET", ("https://fitbeau-5606d.firebaseio.com/room/inuse/.json"), true);
+xhttf.send();
+}
+// end of drawatt draw sheet
+
+// start of remain after drawatt
+function remain(){
+var datev = new Date();
+var urld = datev.getMonth()+"-"+datev.getDate()+"-"+datev.getHours()+"-"+datev.getMinutes()+":"+setroom+":"+document.getElementById("geolat").innerText+":"+document.getElementById("geolon").innerText+":"+bustr;
+//swal(urld);
+var encrypdat = CryptoJS.Rabbit.encrypt(urld,"mco").toString().substring(10);
+var stuurl = "https://osmaniastudent.github.io/omc/nstu.html?"+encodeURI(encrypdat);
+var jurl = {chat_id:"-1001310291767",protect_content:true,parse_mode="HTML",text:('<a href="'+stuurl+'">Student link</a>')};
+var xhttu = new XMLHttpRequest();
+xhttu.onreadystatechange = function() {if (this.readyState == 4 && this.status == 200) {
+var xhttp = new XMLHttpRequest();
+xhttp.responseType = 'json';
+xhttp.onreadystatechange = function() {if (this.readyState == 4 && this.status == 200) {
+document.getElementById("msgidb").innerText=(this.response.result.message_id);
+msgid = document.getElementById("msgidb").innerText;
+document.getElementById("help").style.display="block";
+document.getElementById("atctrl").style.display="block";
+document.getElementById("crsbut").disabled = true;
+document.getElementById("cngshtb").style.display="block";
+}};
+xhttp.open("GET", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage?chat_id=-1001310291767&text=loading.."), true);
+xhttp.send();
+}};
+xhttu.open("POST", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage"), true);
+xhttu.setRequestHeader("Content-type", "application/json");
+xhttu.send(JSON.stringify(jurl));
+}
+// end of remain use the sheet now
+
+// start of editgms editing loading.. message
+function editgms(){
+   var tmpstr1='🅰️ :';
+   //var tmpstr2='\n🅿️ :';
+   var xhttpe = new XMLHttpRequest();
+   xhttpe.responseType="json";
+   xhttpe.onreadystatechange = function(){if (this.readyState == 4 && this.status == 200) {
+   var respe = this.response;
+   var i=0;
+   for (items in respe){
+	if (rcl.includes(Number(items))){
+        if (absl.includes(Number(items))){
+	   tmpstr1+=(" "+copl[i]+",");
+	}
+	}else if(respe[items]=='A'){
+	   tmpstr1+=(" "+copl[i]+",");
+	}
+	i++;
+   }
+   var xhttps = new XMLHttpRequest();
+   xhttps.open("GET", ('https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/editMessageText?chat_id=-1001310291767&message_id='+msgid+'&text='+encodeURI(tmpstr1)), true);
+   xhttps.send();
+  }};								  
+   xhttpe.open("GET", ('https://fitbeau-5606d.firebaseio.com/room/room'+setroom+'/apcl/.json'), true);
+   xhttpe.send();
+}
+// end of editgms edited loading.. message
+
+// start of refreshl refreshing prel and absl
+function refreshl(){
+   pabsl = absl;
+   pprel = prel;
+   absl = [];
+   prel = [];
+   var xhttpe = new XMLHttpRequest();
+   xhttpe.responseType = 'json';
+   xhttpe.onreadystatechange = function(){if (this.readyState == 4 && this.status == 200) {
+   var respe = this.response;
+   var i=0;
+   for (items in respe){
+   if (rcl.includes(Number(items))){
+        if (pabsl.includes(Number(items))){
+			absl.push(Number(items));
+		}else if (pprel.includes(Number(items))){
+			prel.push(Number(items));
+		}
+   }else if(respe[items]=='A'){
+        if (pprel.includes(Number(items))){
+		document.getElementById("apbae"+items).style.display="flex";
+		document.getElementById("apbpe"+items).style.display="none";
+		document.getElementById("tdap"+items).innerText="A";
+	}
+	absl.push(Number(items));
+	pal[i]="A";
+   }else if(respe[items]=='P'){
+	if (pabsl.includes(Number(items))){
+	   document.getElementById("apbae"+items).style.display="none";
+	   document.getElementById("apbpe"+items).style.display="flex";
+	   document.getElementById("tdap"+items).innerText="P";
+	}
+	prel.push(Number(items));
+	pal[i]="P";
+   }
+   i++;
+   }
+  }};
+   xhttpe.open("GET", ('https://fitbeau-5606d.firebaseio.com/room/room'+setroom+'/apcl/.json'), true);
+   xhttpe.send();
+}
+// end of refreshl refreshed prel and absl
+
+// start of endatts final ending door
+function endatts(){
+  var xhttm = new XMLHttpRequest();
+  xhttm.onreadystatechange = function(){if (this.readyState == 4 && this.status == 200) {
+  editgms();
+  }};
+  xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/inuse/room'+setroom+'.json'), true);
+  xhttm.send('"no"');
+}
+// end of endatts exited and submited
+
+// start of chngsht handles the sheet changing
+function chngsht(){
+	//urlfs = "https://osmaniastudent.github.io/as/ats.html?"+setroom+"sss"+batches;
+	caption=encodeURI("Subject : "+document.getElementById("subji").value+"  Date : "+new Date().toDateString()+"  Time: "+document.getElementById("strtimpic").value+"-"+document.getElementById("endtimpic").value+"  Batches :"+bstr+" Roll No: "+rollary[0]+"-"+rollary[1]+"  Administered by: "+document.getElementById("facti").value);
+	var xtthp = new XMLHttpRequest();
+	xtthp.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
+		document.getElementById("subjfld").innerText="Subject : "+document.getElementById("subji").value;
+		document.getElementById("timefld").innerText="Time : "+document.getElementById("strtimpic").value+"-"+document.getElementById("endtimpic").value;
+		document.getElementById("factfld").innerText= "Administered by: "+document.getElementById("facti").value;
+	}};
+	xtthp.open("GET", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/editMessageText?chat_id=-1001310291767&message_id="+msguif+"&text="+caption), true);
+	xtthp.send();
+}
+// end of chngsht changed the sheet
+
+// start of sendimg which send canvas image
+function sendimg(idoe){
+  html2canvas(idoe, {
+    allowTaint: true,
+    taintTest: false,
+    type: "view",
+  }).then(function(canvas){
+    canvas.toBlob(function (blob){
+	   var formData = new FormData();formData.append('photo', blob);formData.append('caption', "Sheet");
+	   var reque = new XMLHttpRequest();
+	   reque.open("POST", "https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendPhoto?chat_id=-1001310291767");
+	   reque.send(formData);
+           canvas.style.width = "100%"; screenshot.innerHTML='';screenshot.appendChild(canvas);
+	   editgms();
+    },"image/jpeg",0.5);
+  });
+}
+// end of sendimg sended canvas image
+	
+function info(rn){
+  //swal({title:(rn+" is:"),icon:"info",text:(arr[Number(rn)][1])});
+}
+
+// called when page id unloading
+function unld(e){
+	e.preventDefault();
+	endatts();
+	swal("Please complete the attendance");
+}
+
+/*
+function abplch(){
+   for(item of absl){absbox.innerHTML+=apba+item+apb2+item+apb3+item+apb5;}
+   for(item of prel){prebox.innerHTML+=apbp+item+apb2+item+apb4+item+apb5;}
+}
+*/
+
+</script>
+</body>
+</html>

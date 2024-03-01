@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="qgenmin.js"></script>
+  <script type="text/javascript" src="crypto.js"></script>
+</head>
+<body onload="update()">
+<div id="qrcode" style="display:flex;justify-content:space-around;"></div>
+<script type="text/javascript">
+  var d = new Date();
+  function update(){
+  document.getElementById("qrcode").innerHTML='';
+  if(window.innerHeight < window.innerWidth){
+	var size = Number((window.innerHeight)*0.80);
+	document.getElementById("qrcode").style.marginTop=((window.innerHeight*0.05)+"px");
+  }else{
+    var size = Number((window.innerWidth)*0.80);
+	document.getElementById("qrcode").style.marginTop=((window.innerHeight*0.10)+"px");
+  }
+  var qrcode = new QRCode(document.getElementById("qrcode"), {
+      width : size,
+      height : size,
+      useSVG: true
+  });
+  var encrypted = CryptoJS.Rabbit.encrypt(d.getMonth()+"-"+d.getDate()+"-"+d.getHours()+"-"+d.getMinutes(), "cmo");
+  qrcode.makeCode(encrypted.toString().substring(10));
+  //console.log("U2FsdGVkX1"+encrypted.toString().substring(10));
+  //var decrypted = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encrypted.toString().substring(10)), "cmo")
+  //console.log(decrypted.toString(CryptoJS.enc.Utf8));
+  }
+  window.addEventListener("resize", update);
+</script>
+</body>
+</html>

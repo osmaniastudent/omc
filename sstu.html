@@ -1,0 +1,181 @@
+<html>
+<head>
+<style>
+</style>
+<script src="crypto.js"></script>
+<script src="sam.js"></script>
+<script src="jm.js"></script>
+<script src="hqrs.js"></script>
+</head>
+<body onload="onld();">
+<div id="reader" style="display:none;width:95%;"></div>
+<button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='scanqr();'>Scan QR</button>
+<script>
+
+let html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
+formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ],
+supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+rememberLastUsedCamera: true,
+showTorchButtonIfSupported: false,
+showZoomSliderIfSupported: true
+}, false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+function onld(){
+	html5QrcodeScanner.start({ facingMode: "environment"})
+	.then((suc) => {
+		html5QrcodeScanner.pause();
+		onldg();
+	})
+	.catch((err) => {
+		swal("Please allow Camera")
+		onld2();
+	});
+}
+function onld2(){
+	html5QrcodeScanner.start({ facingMode: "environment"})
+	.then((suc) => {
+		html5QrcodeScanner.pause();
+	})
+	.catch((err) => {
+		swal("Please allow Camera")
+		onld();
+	});
+}
+
+function onldg(){
+	const opt = {enableHighAccuracy: true};
+	navigator.geolocation.getCurrentPosition(gtans, gerror, opt);
+}
+
+function gerror(error){
+	if(error.code == 1){
+		swal("Please allow the Location Access");
+		onldg();
+	}else{
+		swal("Unknown error Occured");
+		onldg();
+	}
+}
+function onScanSuccess(decodedText, decodedResult) {
+	//console.log("Text:"+decodedText+" Result:"+decodedResult);
+	try{
+		var decqr = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+decodedText), "cmo");
+		var qdate = decqr.split("-");
+		if(dateol.getMonth() == Number(qdate[0]) && dateol.getDate() == Number(qdate[1])){
+			if((dateol.getHours()*60+dateol.getMinutes())<(Number(qdate[2])*60+Number(qdate[3])+6)){
+				var xhttm = new XMLHttpRequest();
+				xhttm.onreadystatechange = function(){if (this.readyState == 4 && this.status == 200) {
+					swal("Your Attendance is Recorded");
+					var l5suba = l5sub.split("-");
+					localStorage.setItem("last5sub", l5subf(l5suba));
+					html5QrcodeScanner.destroy();
+				}};
+				xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/inuse/room'+datapart[1]+'/'+rollno+'/.json'), true);
+				xhttm.send('"P"');
+			}else{
+				console.log("Time of Qr ended");
+				return;
+			}
+		}else{
+			console.log("Old Qr used");
+			return;
+		}
+	}catch{
+		console.log("Some other Qr scanned or other problem");
+	}
+}
+function onScanFailure(error) {
+	console.warn(error);//will not stop scanning.
+}
+function success(pos){
+	var dateol = new Date();
+	var l5sub = localStorage.getItem("last5sub");
+	var batch = localStorage.getItem("obatch");
+	var rollno = localStorage.getItem("oroll");
+	if(localStorage.getItem("oreg")=="yes"){
+		var xhttf = new XMLHttpRequest();
+		xhttf.responseType="json";
+		xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
+		if(xhttf.response.active==localStorage.getItem("oid")){
+			var encdata = decodeURI((window.location.href.split("?"))[1]);
+			try{
+				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "cmo");
+				var datapart = decdata.split(":");
+				// Month-Date-Hour-Minute:Room:Lat:Long:Batch for Soft Admin
+				if (l5sub.indexOf(datapart[0])=="-1"){
+					if(batch.indexOf(datapart[4])=="-1"){
+						swal("Its not Your Batch");
+						return;
+					}else{
+						var udate = datapart[0].split("-");
+						if(dateol.getMonth() == Number(udate[0]) && dateol.getDate() == Number(udate[1])){
+							if((dateol.getHours()*60+dateol.getMinutes())<(Number(udate[2])*60+Number(udate[3])+6)){
+								if(calcCrow(pos.coords.latitude,pos.coords.longitude,Number(datapart[2]),Number(datapart[3]))){
+									// enable Qr scan
+									document.getElementById("reader").style.display="block";
+									html5QrcodeScanner.resume();
+								}else{
+									swal("Invalid Process");
+									return;
+								}
+							}else{
+								swal("Invalid Process");
+								return;
+							}
+						}else{
+							swal("Invalid Process");
+							return;
+						}
+					}
+				}else{
+					swal("You have already Submitted");
+					return;
+				}
+			}catch{
+				swal("Invalid Process");
+				return;
+			}
+		}else{
+			localStorage.clear();
+		}
+		}};
+		xhttf.open("GET", ('https://fitbeau-5606d.firebaseio.com/info/r'+rollno+'/.json'), true);
+		xhttf.send();
+	}else{
+		swal("Device not Registered");
+		return;
+	}
+}
+function l5sbf(ara){
+	var l5subv = '';
+	var il5 = 0;
+	for (items of ara){
+		if(il5 == 0 && ara.length >= 5){
+		}else{
+			l5subv+="-"+items;
+		}
+		il5++;
+	}
+	l5subv+=("-"+datapart[0]);
+}
+function calcCrow(lat1, lon1, lat2, lon2){
+   var R = 6371000;
+   var dLat = toRad(lat2-lat1);
+   var dLon = toRad(lon2-lon1);
+   var lat1 = toRad(lat1);
+   var lat2 = toRad(lat2);
+   var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+   var d = R * c;
+   if (d < 10){
+		return true;
+   }else{
+		return false;
+   }
+}
+function toRad(Value){
+   return Value * Math.PI / 180;
+}
+</script>
+</body>
+</html>

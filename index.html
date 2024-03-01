@@ -1,0 +1,28 @@
+<html>
+
+<body onload="onld();">
+<script src="hqrs.js"></script>
+<div id="writer"></div>
+<div id="reader"></div>
+<script>
+function onld(){
+let html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
+formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ],
+supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+rememberLastUsedCamera: true,
+showTorchButtonIfSupported: false,
+showZoomSliderIfSupported: true
+}, false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);	
+}
+function onScanSuccess(decodedText, decodedResult) {
+//console.log("Text:"+decodedText+" Result:"+decodedResult);
+document.getElementById("writer").innerText = ("Text:"+decodedText+" Result:"+decodedResult);
+}
+function onScanFailure(error) {
+console.warn(error);//will not stop scanning.
+}
+// defaultZoomValueIfSupported: 2
+</script> 
+</body>
+</html>

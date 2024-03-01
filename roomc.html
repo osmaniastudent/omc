@@ -1,0 +1,20 @@
+<html>
+
+<body>
+<button onclick="emptyroom(1)">Room 1</button>
+<button onclick="emptyroom(2)">Room 2</button>
+<button onclick="emptyroom(3)">Room 3</button>
+<button onclick="emptyroom(4)">Room 4</button>
+<script>
+function emptyroom(room) {
+if(Number(window.prompt("Type a number", "")) == 765){
+  var xhttm = new XMLHttpRequest();
+  xhttm.onreadystatechange = function(){if (this.readyState == 4 && this.status == 200) {
+  }};
+  xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/inuse/room'+room+'.json'), true);
+  xhttm.send('"no"');
+}
+}
+</script> 
+</body>
+</html>
