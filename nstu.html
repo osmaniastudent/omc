@@ -35,7 +35,7 @@ function success(pos){
 		if(xhttf.response.active==oidv){
 			var encdata = (window.location.href.split("?"))[1];
 			try{
-				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "mco").toString();
+				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "mco").toString(CryptoJS.enc.Utf8);
 				var datapart = decdata.split(":");
 				// Month-Date-Hour-Minute:Room:Lat:Long:Batch for No Admin
 				if (l5sub.indexOf(datapart[0])=="-1"){
