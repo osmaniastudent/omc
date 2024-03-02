@@ -31,6 +31,7 @@ window.onload = function (){
 		swal("Registration are Closed");
 	}else{
 		document.getElementById("rtool").style.display="block";
+		swal("You can Register");
 	}
 }
 function reges(){
@@ -43,11 +44,11 @@ if (document.getElementById("bata").checked){batchv="a";}else if(document.getEle
 var xhttf = new XMLHttpRequest();
 xhttf.responseType="json";
 xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
-	if(xhttf.response.reg=="yes"){
-		swal("You are Registered Somewhere");
-	}else{
+	if(xhttf.response.reg==null){
 		var datastr = '{"reg":"yes","active":"ID1","name":"'+namev+'"}';
 		swal({title: "Are you sure?",text: "It will create Your account here",icon: "warning",buttons: true,dangerMode: true,}).then((value) => {if(value){swal({icon: "info",title:"Started",text:"Registration in Process"});senddata(datastr);}else{swal({title:"Cancelled Process",icon:"info"});}});
+	}else{
+		swal("You are Registered Somewhere");
 	}
 }};
 xhttf.open("GET", ('https://fitbeau-5606d.firebaseio.com/info/r'+rollno+'/.json'), true);
