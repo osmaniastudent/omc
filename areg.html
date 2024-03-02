@@ -1,0 +1,74 @@
+<html>
+<style>
+.inptc{
+	transform: scale(2.5);
+}
+.labtc{
+	font-size: 25px;
+	margin: 20px;
+}
+</style>
+<body>
+<div id="rtool" style="display:none;">
+<input type="text" id="nameinp" placeholder="Type Your Name" style="display:inherit;margin:auto;width:70%;margin-top:5px;"/>
+<input type="number" id="rollinp" placeholder="Type Your Roll No" style="display:inherit;margin:auto;width:70%;margin-top:5px;"/>
+<form style="justify-content:space-around;display:flex;margin-block-end:0px;column-gap:10px;">
+<label class="labtc">A: <input class="inptc" name="brg" type="radio" id="bata"></label>
+<label class="labtc">B: <input class="inptc" name="brg" type="radio" id="batb"></label>
+<label class="labtc">C: <input class="inptc" name="brg" type="radio" id="batc"></label>
+</form>
+<button type="button" id="crsbut" style="display:block;width:50%;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;" onclick='reges();'>Submit</button>
+</div>
+<script src="sam.js"></script>
+<script>
+var rclose = false;
+var batchv;
+var rollno = 0
+window.onload = function (){
+	if (localStorage.getItem("oreg") == "yes"){
+		swal("It looks like you are already Registered");
+	}else if (rclose){
+		swal("Registration are Closed");
+	}else{
+		document.getElementById("rtool").style.display="block";
+		swal("You can Register");
+	}
+}
+function reges(){
+var namev = document.getElementById("nameinp").value;
+var rollno = document.getElementById("rollinp").value;
+if(!rollno){swal("Please Type Roll No");return;}
+if(rollno > 235){swal("Roll no should be Proper");return;}else if(rollno < 1){swal("Please Type Roll no Properly");return;}
+if(!namev){swal("Please Type Your Name");return;}
+if (document.getElementById("bata").checked){batchv="a";}else if(document.getElementById("batb").checked){batchv="b";}else if(document.getElementById("batc").checked){batchv="c";}else{swal("Please choose a Batch");return;}
+var xhttf = new XMLHttpRequest();
+xhttf.responseType="json";
+xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
+	if(xhttf.response!==null){
+		var datastr = '{"reg":"yes","active":"id1","name":"'+namev+'"}';
+		swal({title: "Are you sure?",text: "It will create Your account here",icon: "warning",buttons: true,dangerMode: true,}).then((value) => {if(value){senddata(datastr,rollno);}else{swal({title:"Cancelled Process",icon:"info"});}});
+	}else{
+		swal("You are Not Registered");
+	}
+}};
+xhttf.open("GET", ('https://fitbeau-5606d.firebaseio.com/info/r'+rollno+'/.json'), true);
+xhttf.send();
+}
+function senddata(dat,rolln){
+	//{"reg":"no","active":"none","name":"xyz"}
+	var xhtto = new XMLHttpRequest();
+	xhtto.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
+		localStorage.setItem("oreg", "yes");
+		localStorage.setItem("oroll", (rollno.toString()));
+		localStorage.setItem("obatch", (batchv));
+		localStorage.setItem("oname", (namev));
+		localStorage.setItem("oid", "id1");
+		swal("Registered Succesfully");
+	}};
+	xhtto.open("PUT", ('https://fitbeau-5606d.firebaseio.com/info/r'+rolln+'/.json'), true);
+	xhtto.setRequestHeader("Content-Type", "application/json");
+	xhtto.send(dat);
+}
+</script>
+</body>
+</html>
