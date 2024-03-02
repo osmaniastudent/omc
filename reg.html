@@ -45,7 +45,7 @@ var xhttf = new XMLHttpRequest();
 xhttf.responseType="json";
 xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
 	if(xhttf.response==null){
-		var datastr = '{"reg":"yes","active":"ID1","name":"'+namev+'"}';
+		var datastr = '{"reg":"yes","active":"id1","name":"'+namev+'"}';
 		swal({title: "Are you sure?",text: "It will create Your account here",icon: "warning",buttons: true,dangerMode: true,}).then((value) => {if(value){senddata(datastr,rollno);}else{swal({title:"Cancelled Process",icon:"info"});}});
 	}else{
 		swal("You are Registered Somewhere");
@@ -63,7 +63,7 @@ function senddata(dat,rolln){
 		localStorage.setItem("obatch", (batchv));
 		localStorage.setItem("oname", (namev));
 		localStorage.setItem("oid", "id1");
-		swal({"Registered Succesfully"});
+		swal("Registered Succesfully");
 	}};
 	xhtto.open("PUT", ('https://fitbeau-5606d.firebaseio.com/info/r'+rolln+'/.json'), true);
 	xhtto.setRequestHeader("Content-Type", "application/json");
