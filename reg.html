@@ -22,7 +22,7 @@
 <script src="sam.js"></script>
 <script>
 var rclose = false;
-var batchv;
+var batchv, namev;
 var rollno = 0
 window.onload = function (){
 	if (localStorage.getItem("oreg") == "yes"){
@@ -35,7 +35,7 @@ window.onload = function (){
 	}
 }
 function reges(){
-var namev = document.getElementById("nameinp").value;
+namev = document.getElementById("nameinp").value;
 var rollno = document.getElementById("rollinp").value;
 if(!rollno){swal("Please Type Roll No");return;}
 if(rollno > 235){swal("Roll no should be Proper");return;}else if(rollno < 1){swal("Please Type Roll no Properly");return;}
@@ -46,7 +46,7 @@ xhttf.responseType="json";
 xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
 	if(xhttf.response==null){
 		var datastr = '{"reg":"yes","active":"id1","name":"'+namev+'"}';
-		swal({title: "Are you sure?",text: "It will create Your account here",icon: "warning",buttons: true,dangerMode: true,}).then((value) => {if(value){senddata(datastr,rollno);}else{swal({title:"Cancelled Process",icon:"info"});}});
+		swal({title: "Are you sure?",text: "It will create Your account here",icon: "warning",buttons: true,dangerMode: true,}).then((value) => {if(value){senddata(datastr);}else{swal({title:"Cancelled Process",icon:"info"});}});
 	}else{
 		swal("You are Registered Somewhere");
 	}
@@ -54,7 +54,7 @@ xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 
 xhttf.open("GET", ('https://fitbeau-5606d.firebaseio.com/info/r'+rollno+'/.json'), true);
 xhttf.send();
 }
-function senddata(dat,rolln){
+function senddata(dat){
 	//{"reg":"no","active":"none","name":"xyz"}
 	var xhtto = new XMLHttpRequest();
 	xhtto.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
@@ -65,7 +65,7 @@ function senddata(dat,rolln){
 		localStorage.setItem("oid", "id1");
 		swal("Registered Succesfully");
 	}};
-	xhtto.open("PUT", ('https://fitbeau-5606d.firebaseio.com/info/r'+rolln+'/.json'), true);
+	xhtto.open("PUT", ('https://fitbeau-5606d.firebaseio.com/info/r'+rollno+'/.json'), true);
 	xhtto.setRequestHeader("Content-Type", "application/json");
 	xhtto.send(dat);
 }
