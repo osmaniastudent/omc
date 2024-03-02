@@ -27,14 +27,15 @@ function success(pos){
 	var l5sub = localStorage.getItem("last5sub");
 	var batch = localStorage.getItem("obatch");
 	var rollno = localStorage.getItem("oroll");
+	var oidv = localStorage.getItem("oid");
 	if(localStorage.getItem("oreg")=="yes"){
 		var xhttf = new XMLHttpRequest();
 		xhttf.responseType="json";
 		xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
-		if(xhttf.response.active==localStorage.getItem("oid")){
+		if(xhttf.response.active==oidv){
 			var encdata = decodeURI((window.location.href.split("?"))[1]);
 			try{
-				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "mco");
+				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "mco").toString();
 				var datapart = decdata.split(":");
 				// Month-Date-Hour-Minute:Room:Lat:Long:Batch for No Admin
 				if (l5sub.indexOf(datapart[0])=="-1"){
