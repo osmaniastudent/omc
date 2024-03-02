@@ -34,7 +34,7 @@ function success(pos){
 		xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
 		if(xhttf.response.active==oidv){
 			var encdata = (window.location.href.split("?"))[1];
-			try{
+			//try{
 				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "mco").toString(CryptoJS.enc.Utf8);
 				var datapart = decdata.split(":");
 				// Month-Date-Hour-Minute:Room:Lat:Long:Batch for No Admin
@@ -72,10 +72,10 @@ function success(pos){
 					swal("You have already Submitted");
 					return;
 				}
-			}catch{
-				swal("Error in lib");
-				return;
-			}
+			//}catch{
+			//	swal("Error in lib");
+			//	return;
+			//}
 		}else{
 			localStorage.clear();
 		}
