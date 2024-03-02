@@ -24,7 +24,7 @@ function gerror(error){
 }
 function success(pos){
 	var dateol = new Date();
-	var l5sub = localStorage.getItem("last5sub");
+	if(localStorage.getItem("last5sub")==null){var l5sub="";}else{var l5sub=localStorage.getItem("last5sub");}
 	var batch = localStorage.getItem("obatch");
 	var rollno = localStorage.getItem("oroll");
 	var oidv = localStorage.getItem("oid");
