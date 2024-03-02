@@ -33,7 +33,7 @@ function success(pos){
 		xhttf.responseType="json";
 		xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
 		if(xhttf.response.active==oidv){
-			var encdata = decodeURI((window.location.href.split("?"))[1]);
+			var encdata = (window.location.href.split("?"))[1];
 			try{
 				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "mco").toString();
 				var datapart = decdata.split(":");
@@ -56,15 +56,15 @@ function success(pos){
 									  xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/inuse/room'+datapart[1]+'/'+rollno+'/.json'), true);
 									  xhttm.send('"P"');
 								}else{
-									swal("Invalid Process");
+									swal("Error of C");
 									return;
 								}
 							}else{
-								swal("Invalid Process");
+								swal("Expired");
 								return;
 							}
 						}else{
-							swal("Invalid Process");
+							swal("Old url");
 							return;
 						}
 					}
@@ -73,7 +73,7 @@ function success(pos){
 					return;
 				}
 			}catch{
-				swal("Invalid Process");
+				swal("Error in lib");
 				return;
 			}
 		}else{
