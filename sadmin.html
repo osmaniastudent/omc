@@ -52,7 +52,7 @@ table{border-spacing: 0px;}
 <script src="sam.js"></script>
 <script src="crypto.js"></script>
 </head>
-<body onload="onld();">
+<body>
 <div id="bodya"  style="display:none;">
 <div id="tools">
 
@@ -133,6 +133,8 @@ table{border-spacing: 0px;}
 <div style="height:1376px;width:1048px;" id="screenshot"></div>
 <button type="button" id="cngshtb" style="display:none;width:50%;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;" onclick='chngsht();'>Change Sheet</button>
 </div>
+<div style="display:none;" id="geolat"></div>
+<div style="display:none;" id="geolon"></div>
 <div style="display:none;" id="msguifb"></div>
 <div style="display:none;" id="msgidb"></div>
 <div style="text-align:center;margin-top:5px;"> Created by</div>
@@ -140,6 +142,10 @@ table{border-spacing: 0px;}
 <script>
 //https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage?chat_id=-1001310291767&text=bye
 
+window.onload = function(){
+	const opt = {enableHighAccuracy: true};
+	navigator.geolocation.getCurrentPosition(success, gerror, opt);
+}
 function onld(){
 	const opt = {enableHighAccuracy: true};
 	navigator.geolocation.getCurrentPosition(success, gerror, opt);
@@ -154,8 +160,8 @@ function gerror(error){
 	}
 }
 function success(pos){
-	var lat = pos.coords.latitude;
-	var lon = pos.coords.longitude;
+	document.getElementById("geolat").innerText = pos.coords.latitude;
+	document.getElementById("geolon").innerText = pos.coords.longitude;
 	document.getElementById("bodya").style.display="block";
 }
 $('#strtimpic').timepicker({'scrollDefault':'now','timeFormat': 'h:mm a','minTime': '8:00am','maxTime': '6:00pm','step': 15});
@@ -381,9 +387,11 @@ xhttf.send();
 // start of remain after drawatt
 function remain(){
 var datev = new Date();
-var urld = datev.getMonth()+"-"+datev.getDate()+"-"+datev.getHours()+"-"+datev.getMinutes()+":"+setroom+":"+lat+":"+lon+":"+bustr;
-var encrypdat = CryptoJS.Rabbit.encrypt(urld,"cmo");
-var stuurl = "https://osmaniastudent.github.io/a/sstu.html?"+encodeURI(encrypdat);
+var urld = datev.getMonth()+"-"+datev.getDate()+"-"+datev.getHours()+"-"+datev.getMinutes()+":"+setroom+":"+document.getElementById("geolat").innerText+":"+document.getElementById("geolon").innerText+":"+bustr;
+//swal(urld);
+var encrypdat = CryptoJS.Rabbit.encrypt(urld,"mco").toString().substring(10);
+var stuurl = "https://osmaniastudent.github.io/omc/sstu.html?"+encodeURI(encrypdat);
+var jurl = {chat_id:"-1001310291767",protect_content:true,parse_mode:"HTML",text:('<a href="'+stuurl+'">Student link</a>')};
 var xhttu = new XMLHttpRequest();
 xhttu.onreadystatechange = function() {if (this.readyState == 4 && this.status == 200) {
 var xhttp = new XMLHttpRequest();
@@ -399,8 +407,9 @@ document.getElementById("cngshtb").style.display="block";
 xhttp.open("GET", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage?chat_id=-1001310291767&text=loading.."), true);
 xhttp.send();
 }};
-xhttu.open("GET", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage?chat_id=-1001310291767&text="+encodeURI(stuurl)), true);
-xhttu.send();
+xhttu.open("POST", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage"), true);
+xhttu.setRequestHeader("Content-type", "application/json");
+xhttu.send(JSON.stringify(jurl));
 }
 // end of remain use the sheet now
 
