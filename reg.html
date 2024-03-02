@@ -63,7 +63,7 @@ function senddata(dat,rolln){
 		localStorage.setItem("obatch", (batchv));
 		localStorage.setItem("oname", (namev));
 		localStorage.setItem("oid", "id1");
-		swal({icon: "success",title:"Done",text:"Registered Succesfully"});
+		swal({"Registered Succesfully"});
 	}};
 	xhtto.open("PUT", ('https://fitbeau-5606d.firebaseio.com/info/r'+rolln+'/.json'), true);
 	xhtto.setRequestHeader("Content-Type", "application/json");
