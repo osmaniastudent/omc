@@ -36,7 +36,8 @@ window.onload = function (){
 function reges(){
 var namev = document.getElementById("nameinp").value;
 var rollno = document.getElementById("rollinp").value;
-if(rollno < 1 || rollno > 235){swal("Please Type Roll No");return;}
+if(!rollno){swal("Please Type Roll No");return;}
+if(rollno > 235){swal("Roll no should be Proper");return;}else if(rollno < 1){swal("Please Type Roll no Properly");return;}
 if(!namev){swal("Please Type Your Name");return;}
 if (document.getElementById("bata").checked){batchv="a";}else if(document.getElementById("batb").checked){batchv="b";}else if(document.getElementById("batc").checked){batchv="c";}else{swal("Please choose a Batch");return;}
 var xhttf = new XMLHttpRequest();
@@ -44,7 +45,7 @@ xhttf.responseType="json";
 xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
 	if(xhttf.response.reg=="yes"){
 		swal("You are Registered Somewhere");
-	}else{ 
+	}else{
 		var datastr = '{"reg":"yes","active":"ID1","name":"'+namev+'"}';
 		swal({title: "Are you sure?",text: "It will create Your account here",icon: "warning",buttons: true,dangerMode: true,}).then((value) => {if(value){swal({icon: "info",title:"Started",text:"Registration in Process"});senddata(datastr);}else{swal({title:"Cancelled Process",icon:"info"});}});
 	}
