@@ -8,13 +8,14 @@
 <script src="hqrs.js"></script>
 </head>
 <body>
-<div id="reader" style="display:none;width:95%;"></div>
+<div id="reader" style="width:95%;"></div>
 <button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='scanqr();'>Scan QR</button>
 <script>
-var datapart, rollno;
-if(localStorage.getItem("last5sub")==null){var l5sub="";}else{var l5sub=localStorage.getItem("last5sub");}
+document.addEventListner("DOMContentLoaded", docl);
+var datapart, rollno, html5QrcodeScanner;
 var opt = {enableHighAccuracy: true};
-let html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
+function docl(){
+html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
 formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ],
 supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
 rememberLastUsedCamera: true,
@@ -22,7 +23,9 @@ showTorchButtonIfSupported: false,
 showZoomSliderIfSupported: true
 }, false);
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-window.onload = function(){
+dcl();
+}
+function dcl(){
 	html5QrcodeScanner.start({ facingMode: "environment"})
 	.then((suc) => {
 		html5QrcodeScanner.pause();
