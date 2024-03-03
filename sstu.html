@@ -105,7 +105,7 @@ function success(pos){
 				datapart = decdata.split(":");
 				// Month-Date-Hour-Minute:Room:Lat:Long:Batch for No Admin
 				if (l5sub.indexOf(datapart[0])=="-1"){
-					if(batch.indexOf(datapart[4])=="-1"){
+					if((datapart[4]).indexOf(batch)=="-1"){
 						swal("Its not Your Batch");
 						return;
 					}else{
