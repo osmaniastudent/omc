@@ -9,12 +9,13 @@
 </head>
 <body onload="onld();">
 <div id="reader" style="display:none;width:95%;"></div>
-<button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='scanqr();'>Scan QR</button>
 <script>
-var datapart, rollno;
+document.addEventListener("DOMContentLoaded", docl);
 if(localStorage.getItem("last5sub")==null){var l5sub="";}else{var l5sub=localStorage.getItem("last5sub");}
+var datapart, rollno, html5QrcodeScanner;
 var opt = {enableHighAccuracy: true};
-let html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
+function docl(){
+html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
 formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ],
 supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
 rememberLastUsedCamera: true,
@@ -22,32 +23,11 @@ showTorchButtonIfSupported: false,
 showZoomSliderIfSupported: true
 }, false);
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-function onld(){
-	html5QrcodeScanner.start({ facingMode: "environment"})
-	.then((suc) => {
-		html5QrcodeScanner.pause();
-		onldg();
-	})
-	.catch((err) => {
-		swal("Please allow Camera")
-		onld2();
-	});
+onldg();
 }
-function onld2(){
-	html5QrcodeScanner.start({ facingMode: "environment"})
-	.then((suc) => {
-		html5QrcodeScanner.pause();
-	})
-	.catch((err) => {
-		swal("Please allow Camera")
-		onld();
-	});
-}
-
 function onldg(){
 	navigator.geolocation.getCurrentPosition(success, gerror, opt);
 }
-
 function gerror(error){
 	if(error.code == 1){
 		swal("Please allow the Location Access");
@@ -70,7 +50,8 @@ function onScanSuccess(decodedText, decodedResult) {
 					swal("Your Attendance is Recorded");
 					var l5suba = l5sub.split("-");
 					localStorage.setItem("last5sub", l5subf(l5suba));
-					html5QrcodeScanner.destroy();
+					html5QrcodeScanner.pause();
+					html5QrcodeScanner.clear();
 				}};
 				xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/room'+datapart[1]+'/apcl/'+rollno+'/.json'), true);
 				xhttm.send('"P"');
@@ -114,8 +95,7 @@ function success(pos){
 							if((dateol.getHours()*60+dateol.getMinutes())<(Number(udate[2])*60+Number(udate[3])+6)){
 								if(calcCrow(pos.coords.latitude,pos.coords.longitude,Number(datapart[2]),Number(datapart[3]))){  
 									document.getElementById("reader").style.display="block";
-									html5QrcodeScanner.resume();
-								}else{
+                                                                }else{
 									swal("Error of C");
 									return;
 								}
