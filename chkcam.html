@@ -1,0 +1,80 @@
+<html>
+<head>
+<style>
+</style>
+<script src="crypto.js"></script>
+<script src="sam.js"></script>
+<script src="jm.js"></script>
+<script src="hqrs.js"></script>
+</head>
+<body>
+<div id="reader" style="display:none;width:95%;"></div>
+<button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='scanqr();'>Scan QR</button>
+<script>
+var datapart, rollno;
+if(localStorage.getItem("last5sub")==null){var l5sub="";}else{var l5sub=localStorage.getItem("last5sub");}
+var opt = {enableHighAccuracy: true};
+let html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
+formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ],
+supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+rememberLastUsedCamera: true,
+showTorchButtonIfSupported: false,
+showZoomSliderIfSupported: true
+}, false);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+window.onload = function(){
+	html5QrcodeScanner.start({ facingMode: "environment"})
+	.then((suc) => {
+		html5QrcodeScanner.pause();
+		onldg();
+	})
+	.catch((err) => {
+		swal("Please allow Camera")
+		onld2();
+	});
+}
+function onld2(){
+	html5QrcodeScanner.start({ facingMode: "environment"})
+	.then((suc) => {
+		html5QrcodeScanner.pause();
+    onldg();
+	})
+	.catch((err) => {
+		swal("Please allow Camera")
+		onld();
+	});
+ }
+function onldg(){
+	navigator.geolocation.getCurrentPosition(success, gerror, opt);
+}
+function gerror(error){
+	if(error.code == 1){
+		swal("Please allow the Location Access");
+		onldg();
+	}else{
+		swal("Unknown error Occured");
+		onldg();
+	}
+}
+function onScanSuccess(decodedText, decodedResult){
+	var dateol = new Date();
+	//console.log("Text:"+decodedText+" Result:"+decodedResult);
+	try{
+		var decqr = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+decodedText), "cmo").toString(CryptoJS.enc.Utf8);
+		var qdate = decqr.split("-");
+		swal("Your device can be used");
+		html5QrcodeScanner.destroy();
+	}catch{
+		console.log("Some other Qr scanned or other problem");
+	}
+}
+function onScanFailure(error) {
+	console.warn(error);//will not stop scanning.
+}
+function success(pos){
+			document.getElementById("reader").style.display="block";
+			html5QrcodeScanner.resume();
+}
+</script>
+</body>
+</html>
