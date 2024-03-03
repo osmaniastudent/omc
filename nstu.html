@@ -53,7 +53,7 @@ function success(pos){
 										var l5suba = l5sub.split("-");
 										localStorage.setItem("last5sub", l5subf(l5suba));
 									  }};
-									  xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/inuse/room'+datapart[1]+'/'+rollno+'/.json'), true);
+									  xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room'+datapart[1]+'/'+rollno+'/.json'), true);
 									  xhttm.send('"P"');
 								}else{
 									swal("Error of C");
