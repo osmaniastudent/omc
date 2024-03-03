@@ -8,7 +8,7 @@
 <button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='onld();'>Send Again</button>
 <body onload="onld();">
 <script>
-
+var datapart;
 var opt = {enableHighAccuracy: true};
 function onld(){
 	navigator.geolocation.getCurrentPosition(success, gerror, opt);
@@ -36,7 +36,7 @@ function success(pos){
 			var encdata = (window.location.href.split("?"))[1];
 			//try{
 				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "mco").toString(CryptoJS.enc.Utf8);
-				var datapart = decdata.split(":");
+				datapart = decdata.split(":");
 				// Month-Date-Hour-Minute:Room:Lat:Long:Batch for No Admin
 				if (l5sub.indexOf(datapart[0])=="-1"){
 					if(batch.indexOf(datapart[4])=="-1"){
@@ -87,17 +87,20 @@ function success(pos){
 		return;
 	}
 }
-function l5sbf(ara){
+function l5subf(ara){
 	var l5subv = '';
 	var il5 = 0;
 	for (items of ara){
 		if(il5 == 0 && ara.length >= 5){
+		}else if(il5 == 0){
+			l5subv+=(items);
 		}else{
-			l5subv+="-"+items;
+			l5subv+=("-"+items);
 		}
 		il5++;
 	}
 	l5subv+=("-"+datapart[0]);
+	return l5subv;
 }
 function calcCrow(lat1, lon1, lat2, lon2){
    var R = 6371000;
