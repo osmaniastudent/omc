@@ -16,6 +16,7 @@ var datapart, rollno, html5QrcodeScanner;
 var opt = {enableHighAccuracy: true};
 function docl(){
 html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
+videoConstraints: { facingMode: { exact: "environment" } },
 formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ],
 supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
 rememberLastUsedCamera: true,
@@ -23,30 +24,7 @@ showTorchButtonIfSupported: false,
 showZoomSliderIfSupported: true
 }, false);
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-dcl();
 }
-function dcl(){
-	html5QrcodeScanner.start({ facingMode: "environment"})
-	.then((suc) => {
-		html5QrcodeScanner.pause();
-		onldg();
-	})
-	.catch((err) => {
-		swal("Please allow Camera")
-		onld2();
-	});
-}
-function onld2(){
-	html5QrcodeScanner.start({ facingMode: "environment"})
-	.then((suc) => {
-		html5QrcodeScanner.pause();
-    onldg();
-	})
-	.catch((err) => {
-		swal("Please allow Camera")
-		onld();
-	});
- }
 function onldg(){
 	navigator.geolocation.getCurrentPosition(success, gerror, opt);
 }
@@ -66,7 +44,7 @@ function onScanSuccess(decodedText, decodedResult){
 		var decqr = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+decodedText), "cmo").toString(CryptoJS.enc.Utf8);
 		var qdate = decqr.split("-");
 		swal("Your device can be used");
-		html5QrcodeScanner.destroy();
+		html5QrcodeScanner.clear();
 	}catch{
 		console.log("Some other Qr scanned or other problem");
 	}
