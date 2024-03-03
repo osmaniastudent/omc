@@ -16,6 +16,7 @@ var datapart, rollno, html5QrcodeScanner;
 var opt = {enableHighAccuracy: true};
 function docl(){
 html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
+videoConstraints: { facingMode: { exact: "environment" } },
 formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ],
 supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
 rememberLastUsedCamera: true,
