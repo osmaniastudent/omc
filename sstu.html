@@ -11,7 +11,9 @@
 <div id="reader" style="display:none;width:95%;"></div>
 <button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='scanqr();'>Scan QR</button>
 <script>
-
+var datapart, rollno;
+if(localStorage.getItem("last5sub")==null){var l5sub="";}else{var l5sub=localStorage.getItem("last5sub");}
+var opt = {enableHighAccuracy: true};
 let html5QrcodeScanner = new Html5QrcodeScanner( "reader",{fps: 10,
 formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ],
 supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
@@ -43,8 +45,7 @@ function onld2(){
 }
 
 function onldg(){
-	const opt = {enableHighAccuracy: true};
-	navigator.geolocation.getCurrentPosition(gtans, gerror, opt);
+	navigator.geolocation.getCurrentPosition(success, gerror, opt);
 }
 
 function gerror(error){
@@ -57,9 +58,10 @@ function gerror(error){
 	}
 }
 function onScanSuccess(decodedText, decodedResult) {
+	var dateol = new Date();
 	//console.log("Text:"+decodedText+" Result:"+decodedResult);
 	try{
-		var decqr = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+decodedText), "cmo");
+		var decqr = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+decodedText), "cmo").toString(CryptoJS.enc.Utf8);
 		var qdate = decqr.split("-");
 		if(dateol.getMonth() == Number(qdate[0]) && dateol.getDate() == Number(qdate[1])){
 			if((dateol.getHours()*60+dateol.getMinutes())<(Number(qdate[2])*60+Number(qdate[3])+6)){
@@ -70,7 +72,7 @@ function onScanSuccess(decodedText, decodedResult) {
 					localStorage.setItem("last5sub", l5subf(l5suba));
 					html5QrcodeScanner.destroy();
 				}};
-				xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/inuse/room'+datapart[1]+'/'+rollno+'/.json'), true);
+				xhttm.open("PUT", ('https://fitbeau-5606d.firebaseio.com/room/room'+datapart[1]+'/apcl/'+rollno+'/.json'), true);
 				xhttm.send('"P"');
 			}else{
 				console.log("Time of Qr ended");
@@ -89,19 +91,19 @@ function onScanFailure(error) {
 }
 function success(pos){
 	var dateol = new Date();
-	var l5sub = localStorage.getItem("last5sub");
 	var batch = localStorage.getItem("obatch");
-	var rollno = localStorage.getItem("oroll");
+	rollno = localStorage.getItem("oroll");
+	var oidv = localStorage.getItem("oid");
 	if(localStorage.getItem("oreg")=="yes"){
 		var xhttf = new XMLHttpRequest();
 		xhttf.responseType="json";
 		xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){
-		if(xhttf.response.active==localStorage.getItem("oid")){
-			var encdata = decodeURI((window.location.href.split("?"))[1]);
-			try{
-				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "cmo");
-				var datapart = decdata.split(":");
-				// Month-Date-Hour-Minute:Room:Lat:Long:Batch for Soft Admin
+		if(xhttf.response.active==oidv){
+			var encdata = (window.location.href.split("?"))[1];
+			//try{
+				var decdata = CryptoJS.Rabbit.decrypt(("U2FsdGVkX1"+encdata), "mco").toString(CryptoJS.enc.Utf8);
+				datapart = decdata.split(":");
+				// Month-Date-Hour-Minute:Room:Lat:Long:Batch for No Admin
 				if (l5sub.indexOf(datapart[0])=="-1"){
 					if(batch.indexOf(datapart[4])=="-1"){
 						swal("Its not Your Batch");
@@ -110,20 +112,19 @@ function success(pos){
 						var udate = datapart[0].split("-");
 						if(dateol.getMonth() == Number(udate[0]) && dateol.getDate() == Number(udate[1])){
 							if((dateol.getHours()*60+dateol.getMinutes())<(Number(udate[2])*60+Number(udate[3])+6)){
-								if(calcCrow(pos.coords.latitude,pos.coords.longitude,Number(datapart[2]),Number(datapart[3]))){
-									// enable Qr scan
+								if(calcCrow(pos.coords.latitude,pos.coords.longitude,Number(datapart[2]),Number(datapart[3]))){  
 									document.getElementById("reader").style.display="block";
 									html5QrcodeScanner.resume();
 								}else{
-									swal("Invalid Process");
+									swal("Error of C");
 									return;
 								}
 							}else{
-								swal("Invalid Process");
+								swal("Expired");
 								return;
 							}
 						}else{
-							swal("Invalid Process");
+							swal("Old url");
 							return;
 						}
 					}
@@ -131,10 +132,10 @@ function success(pos){
 					swal("You have already Submitted");
 					return;
 				}
-			}catch{
-				swal("Invalid Process");
-				return;
-			}
+			//}catch{
+			//	swal("Error in lib");
+			//	return;
+			//}
 		}else{
 			localStorage.clear();
 		}
@@ -146,17 +147,20 @@ function success(pos){
 		return;
 	}
 }
-function l5sbf(ara){
+function l5subf(ara){
 	var l5subv = '';
 	var il5 = 0;
 	for (items of ara){
 		if(il5 == 0 && ara.length >= 5){
+		}else if(il5 == 0){
+			l5subv+=(items);
 		}else{
-			l5subv+="-"+items;
+			l5subv+=("-"+items);
 		}
 		il5++;
 	}
 	l5subv+=("-"+datapart[0]);
+	return l5subv;
 }
 function calcCrow(lat1, lon1, lat2, lon2){
    var R = 6371000;
