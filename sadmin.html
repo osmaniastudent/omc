@@ -80,6 +80,7 @@ table{border-spacing: 0px;}
 </div>
 
 <button type="button" id="crsbut" style="display:block;width:50%;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;" onclick='crtshtini();'>Create Sheet</button>
+<button type="button" id="startbut" style="display:none;width:50%;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;" onclick='remain();'>Start System</button>
 <button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='refreshl()'>Refresh Data</button>
 <button type="button" style="display:block;width:50%;background-color:aqua;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='sendimg(document.getElementById("finallook"));'>Send Attendance</button>
 <button type="button" style="display:block;width:50%;background-color:red;font-family:monospace;font-size:20px;text-align:center;padding:8px;margin:auto;margin-top:5px;" onclick='endatts()'>End Attendance System</button>
@@ -367,7 +368,7 @@ xhttf.onreadystatechange = function(){if(this.readyState == 4 && this.status == 
 	xtthp.responseType="json";
 	xtthp.onreadystatechange = function(){if(this.readyState == 4 && this.status == 200){document.getElementById("msguifb").innerText=(this.response.result.message_id);
 	msguif = document.getElementById("msguifb").innerText;
-	remain();
+	remaino();
 	}};
 	xtthp.open("GET", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage?chat_id=-1001310291767&text="+caption), true);
 	xtthp.send();
@@ -385,6 +386,13 @@ xhttf.send();
 // end of drawatt draw sheet
 
 // start of remain after drawatt
+function remaino(){
+document.getElementById("help").style.display="block";
+document.getElementById("atctrl").style.display="block";
+document.getElementById("crsbut").disabled = true;
+document.getElementById("startbut").style.display = "block";
+document.getElementById("cngshtb").style.display="block";
+}
 function remain(){
 var datev = new Date();
 var urld = datev.getMonth()+"-"+datev.getDate()+"-"+datev.getHours()+"-"+datev.getMinutes()+":"+setroom+":"+document.getElementById("geolat").innerText+":"+document.getElementById("geolon").innerText+":"+bustr;
@@ -399,10 +407,7 @@ xhttp.responseType = 'json';
 xhttp.onreadystatechange = function() {if (this.readyState == 4 && this.status == 200) {
 document.getElementById("msgidb").innerText=(this.response.result.message_id);
 msgid = document.getElementById("msgidb").innerText;
-document.getElementById("help").style.display="block";
-document.getElementById("atctrl").style.display="block";
-document.getElementById("crsbut").disabled = true;
-document.getElementById("cngshtb").style.display="block";
+document.getElementById("startbut").style.display = "none";
 }};
 xhttp.open("GET", ("https://api.telegram.org/bot5983894147:AAF31AIhn2NAqrlejK-1BDvaZNoj1a2o4N0/sendmessage?chat_id=-1001310291767&text=loading.."), true);
 xhttp.send();
