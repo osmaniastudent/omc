@@ -399,7 +399,7 @@ var urld = datev.getMonth()+"-"+datev.getDate()+"-"+datev.getHours()+"-"+datev.g
 //swal(urld);
 var encrypdat = CryptoJS.Rabbit.encrypt(urld,"mco").toString().substring(10);
 var stuurl = "https://osmaniastudent.github.io/omc/nstu.html?"+encrypdat;
-var jurl = {chat_id:"-1001310291767",parse_mode:"HTML",text:('<a href="'+stuurl+'">Student link</a>')};
+var jurl = {chat_id:"-1001310291767",parse_mode:"markdown",text:('`'+stuurl+'`')};
 var xhttu = new XMLHttpRequest();
 xhttu.onreadystatechange = function() {if (this.readyState == 4 && this.status == 200) {
 var xhttp = new XMLHttpRequest();
